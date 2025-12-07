@@ -1,3 +1,8 @@
+mod common;
+mod memory;
+mod monitor;
+mod utils;
+
 fn main() {
-    println!("Hello, world!");
+    monitor::init_monitor();
 }

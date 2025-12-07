@@ -1,0 +1,10 @@
+#
+# Automatically generated file; DO NOT EDIT.
+# Main menu
+#
+
+#
+# r2emu menu
+#
+CONFIG_R2EMU_HELLO=y
+# end of r2emu menu

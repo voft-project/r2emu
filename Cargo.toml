@@ -5,10 +5,13 @@ edition = "2024"
 
 [dependencies]
 clap = { version = "4.5.49", features = ["derive"] }
-fern = "0.7.1"
+fern = { version = "0.7.1", features = ["colored"] }
+strum = { version = "0.26", features = ["derive"] }
 log = "0.4.28"
 regex = "1.12.2"
 rand = "0.8"
+rustyline = "17.0.2"
+capstone = "0.12.0"
 
 [build-dependencies]
 regex = "1.12.2"

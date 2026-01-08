@@ -17,9 +17,14 @@ $(KCONFIG_CONF):
 	$(MAKE) -C $(KCONFIG_DIR)
 
 # .config 规则
-.config: $(KCONFIG_MCONF) $(KCONFIG_FILE)
-	@echo ">>> Generating .config"
-	@$(MAKE) menuconfig
+.config: $(KCONFIG_MCONF) $(KCONFIG_FILE) $(KCONFIG_CONF)
+	@if [ ! -f .config ]; then \
+		echo ">>> .config not found. Running interactive menuconfig for initial configuration."; \
+		$(MAKE) menuconfig; \
+	else \
+		echo ">>> .config found. Checking for updates with oldconfig."; \
+		$(KCONFIG_CONF) --oldconfig $(KCONFIG_FILE); \
+	fi
 
 build: .config
 	@cargo build

@@ -1,5 +1,8 @@
 /target
 
 
-# log
 *log
+.vscode
+.config
+tools/**/build/
+include/

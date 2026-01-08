@@ -1,10 +1,6 @@
 use crate::common::common::vaddr_t;
-use std::sync::{LazyLock, Mutex};
 
-pub static R2EMU_STATE: LazyLock<Mutex<R2emuState>> =
-    LazyLock::new(|| Mutex::new(R2emuState::new()));
-
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum R2emuStateEnum {
     Running,
     Stop,
@@ -29,14 +25,9 @@ impl R2emuState {
         }
     }
 
-    pub fn get_mut_ref() -> std::sync::MutexGuard<'static, Self> {
-        R2EMU_STATE.lock().unwrap()
-    }
-
     pub fn set_state(&mut self, new_state: R2emuStateEnum) {
         self.state = new_state;
     }
-
     pub fn get_state(&self) -> R2emuStateEnum {
         self.state
     }
@@ -59,12 +50,5 @@ impl R2emuState {
 }
 
 pub fn is_exist_status_bad() -> bool {
-    // 优化: 用RWLock优化
-    let global_state = R2emuState::get_mut_ref();
-    let current_state = global_state.get_state();
-    let current_halt_ret = global_state.get_halt_ret();
-    let good = (current_state == R2emuStateEnum::End && current_halt_ret == 0)
-        || (current_state == R2emuStateEnum::Quit);
-
-    !good
+    todo!()
 }

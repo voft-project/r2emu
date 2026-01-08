@@ -7,7 +7,7 @@ const CONFIG_RE_PATTERN: &str = r"^CONFIG_([A-Za-z0-9_]+)=y";
 
 fn main() -> Result<()> {
     let config_name: &str = ".config";
-    let config_file = Path::new(config_name);
+    let config_file: &Path = Path::new(config_name);
     if config_file.exists() {
         println!("{config_name} exist");
     } else {

@@ -1,5 +1,4 @@
 use clap::Parser;
-use log::info;
 use std::sync::OnceLock;
 
 pub static GLOBAL_R2EMU_CONFIG: OnceLock<CommandArgs> = OnceLock::new();
@@ -37,4 +36,9 @@ pub fn parse_args() {
 pub fn print_args() {
     let ca = CommandArgs::parse();
     println!("{:?}", ca);
+}
+
+pub fn get_command_args_batch() -> bool {
+    let ca = GLOBAL_R2EMU_CONFIG.get().expect("GLOBAL_R2EMU_CONFIG not initialized");
+    ca.batch
 }

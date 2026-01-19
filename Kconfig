@@ -1,3 +1,69 @@
-menu "r2emu menu"
+mainmenu "R2EMU (Rust RISC-V Emulator) Configuration"
 
+menu "Architecture"
+
+    choice
+        prompt "Select Guest ISA"
+        default ISA_RV32I
+
+        config ISA_RV32I
+            bool "riscv32"
+            select ISA32
+
+        config ISA_RV64I
+            bool "riscv64"
+            select ISA64
+    endchoice
+
+    config GUEST_ISA
+        string
+        default "riscv32" if ISA_RV32I
+        default "riscv64" if ISA_RV64I
 endmenu
+
+menu "Devices"
+    menu "Main DRAM Configuration"
+        config MBASE
+            hex "DRAM Base Address"
+            default 0x80000000
+            help
+                "The physical start address of the main memory."
+
+        config MSIZE
+            hex "DRAM Size (in bytes)"
+            default 0x100000
+            help
+                "The total size of the DRAM (default 128MB is 0x8000000). 
+                 Note: 0x100000 is 1MB."
+    endmenu
+endmenu
+
+menu "Runtime Options"
+    menuconfig DIFFTEST
+        bool "Enable difftest"
+        default n
+
+    if DIFFTEST
+        config DIFFTEST_REF_PATH
+        string "Reference difftest model source path"
+        depends on DIFFTEST
+        default "tools/spike-diff"
+        help
+            "Specify the path to the reference model source code."
+
+        config DIFFTEST_REF_NAME    
+        string "Reference difftest model name"
+        depends on DIFFTEST
+        default "spike"
+        help
+            "Specify the name to the reference model."
+    endif
+endmenu
+
+# unvisible
+config ISA32
+    bool
+
+config ISA64
+    bool
+    

@@ -4,5 +4,6 @@
 *log
 .vscode
 .config
+.config.old
 tools/**/build/
 include/

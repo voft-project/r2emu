@@ -1,12 +1,9 @@
-use regex::Regex;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Result};
 use std::path::Path;
 
-const CONFIG_RE_PATTERN: &str = r"^CONFIG_([A-Za-z0-9_]+)=y";
-
 fn main() -> Result<()> {
-    let config_name: &str = ".config";
+    let config_name: &str = "include/config/auto.conf";
     let config_file: &Path = Path::new(config_name);
     if config_file.exists() {
         println!("{config_name} exist");
@@ -14,22 +11,24 @@ fn main() -> Result<()> {
         println!("{config_name} not exists");
         return Ok(());
     }
-
-    // Parse .config
-    let re = Regex::new(CONFIG_RE_PATTERN).expect("Failed to compile regex pattern.");
+    println!("cargo:rerun-if-changed={}", config_name);
 
     let file = File::open(config_file).unwrap();
     let reader = BufReader::new(file);
-
     for line_res in reader.lines() {
         let line = line_res?;
-        if let Some(captures) = re.captures(&line) {
-            let key = captures.get(1).map_or("", |m| m.as_str());
-            let cfg_flag = key.to_lowercase();
-            // 声明cfg
-            println!("cargo::rustc-check-cfg=cfg({})", cfg_flag);
-            // 启用cfg
-            println!("cargo:rustc-cfg={}", cfg_flag);
+        if let Some((key, value)) = line.split_once('=') {
+            let clean_value = value.trim().trim_matches('"');
+            let clean_key = key.trim();
+            if clean_value == "y" {
+                println!("cargo:rustc-check-cfg=cfg({})", clean_key);
+                println!("cargo::rustc-cfg={}", clean_key);
+            } else {
+                println!("cargo:rustc-check-cfg=cfg({}, values(\"{}\"))", clean_key, clean_value);
+                println!("cargo::rustc-cfg={}=\"{}\"", clean_key, clean_value);
+                // 注入环境变量
+                println!("cargo::rustc-env={}={}", clean_key, clean_value);
+            }
         }
     }
 

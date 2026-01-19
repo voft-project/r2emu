@@ -38,6 +38,7 @@ pub fn print_args() {
     println!("{:?}", ca);
 }
 
+#[allow(unused)]
 pub fn get_command_args_batch() -> bool {
     let ca = GLOBAL_R2EMU_CONFIG.get().expect("GLOBAL_R2EMU_CONFIG not initialized");
     ca.batch
